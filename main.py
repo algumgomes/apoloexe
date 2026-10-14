@@ -1,9 +1,16 @@
 import os
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
+
+load_dotenv()
 
 intents = discord.Intents.all()
 bot = commands.Bot(".", intents=intents)
+token = os.getenv("TOKEN")
+
+if not token:
+    raise RuntimeError("A variável de ambiente TOKEN não está definida.")
 
 @bot.event
 async def on_ready():
@@ -15,9 +22,4 @@ async def somar(ctx:commands.Context, num1, num2):
     nome_user = ctx.author.name
     await ctx.reply(f"{nome_user}, a soma entre {num1} e {num2} é: {soma}.")
 
-@bot.event()
-async def on_member_join(membro:discord.member):
-    canal = bot.get_channel(1382140780050780352)
-    await canal.send(f"{membro.mention} chegou. seja bem vindo ao lugar!")
-
-bot.run(os.getenv("TOKEN"))
+bot.run(token)
